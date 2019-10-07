@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Coffee = require('../db').import('../models/coffee');
 const validateSession = require('../middleware/validate-session');
 
+
 /******************************
  * GET COFFEE BY ROAST
  ******************************/
@@ -18,7 +19,7 @@ router.get('/:roast', (req,res) => {
 /******************************
  * GET SPECFIC COFFEE (by ID)
  ******************************/
-router.get('/:id', (req,res) => {
+router.get('/select/:id', (req,res) => {
     Coffee.findOne({
         where: {id: req.params.id}
     })
@@ -31,10 +32,10 @@ router.get('/:id', (req,res) => {
 /***********************************************
  * DELETE SPECIFIC COFFEE (admin only property)
  **********************************************/
-router.delete(':/id', validateSession, (req,res) => {
+router.delete('/:id', validateSession, (req,res) => {
     Coffee.destroy({
         where: {id: req.params.id, 
-                // user_id: req.user.id, need to add hasmany to the user model
+            userId: req.user.id
         }
     })
     .then(coffee => res.status(200).json(coffee))
@@ -44,16 +45,17 @@ router.delete(':/id', validateSession, (req,res) => {
 });
 
 /***********************************************
- * CREATE A COFFEE (admin only property)
+ * CREATE A COFFEE (admin only property)     
  **********************************************/
 router.post('/',  validateSession, (req,res) => {
+    console.log(req.user);
     Coffee.create({
         name: req.body.coffee.name,
         roast: req.body.coffee.roast,
         type: req.body.coffee.type,
         price: req.body.coffee.price,
         description: req.body.coffee.description,
-        // user_id: req.user.id, need to add hasmany to the user controller
+        userId: req.user.id
     })
     .then(coffee => res.status(200).json(coffee))
     .catch(err => res.status(500).json({
@@ -62,9 +64,21 @@ router.post('/',  validateSession, (req,res) => {
         
 });
 
-
-
-
+/***********************************************
+ * UPDATE A COFFEE (admin only property)     
+ **********************************************/
+router.put('/:id', validateSession, (req, res) => {
+    Coffee.update(req.body.coffee, {
+      where: {
+        id: req.params.id,
+        userId: req.user.id
+      }
+    })
+    .then(review => res.status(200).json(review))
+    .catch(err => res.status(500).json({
+      error: err
+    }))
+  })
 
 
 module.exports = router;
