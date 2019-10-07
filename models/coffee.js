@@ -1,4 +1,4 @@
-const user = require('./user');
+
 
 module.exports = (sequelize, DataTypes) => {
     const Coffee = sequelize.define('coffee', {
@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     })
 
-    // Coffee.belonygsto(user)
     return Coffee;
 
 }

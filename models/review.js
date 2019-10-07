@@ -3,11 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     message: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    owner: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+    }
   })
   return Review;
 }
