@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     })
 
-    // Coffee.belongsto(user)
+    // Coffee.belonygsto(user)
     return Coffee;
 
 }
