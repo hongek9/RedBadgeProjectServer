@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log(process.env.PASS)
 
 const express = require('express');
 const app = express();
@@ -15,4 +16,4 @@ app.use('/coffee', coffee);
 app.use('/user', user);
 app.use('/review', review);
 
-app.listen(process.env.PORT, () => console.log(`app is listening`));
+app.listen('3000', () => console.log(`app is listening `));
