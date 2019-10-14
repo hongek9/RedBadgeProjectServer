@@ -3,8 +3,10 @@ const Review = require('../db').import('../models/review');
 const validateSession = require('../middleware/validate-session');
 
 //Get//
-router.get('/review', (req, res) => {
-  Review.findAll()
+router.get('/:id', (req, res) => {
+  Review.findAll({
+    where: {coffeeId: req.params.id }
+  })
   .then(review => res.status(200).json(review))
         .catch(err => res.status(500).json({
             error: err
@@ -12,10 +14,12 @@ router.get('/review', (req, res) => {
 })
 
 //Create//
-router.post('/review', validateSession, (req, res) => {
+router.post('/:id', validateSession, (req, res) => {
   const postReview = {
-    message: req.body.message,
-    owner: req.body.owner
+    message: req.body.review.message,
+    userId: req.user.id,
+    coffeeId: req.params.id
+
   }
   Review.create(postReview)
   .then(review => res.status(200).json(review))
@@ -23,10 +27,11 @@ router.post('/review', validateSession, (req, res) => {
 })
 
 // Delete //
-router.delete('/:id', (req, res) => {
+router.delete('/:id',validateSession, (req, res) => {
   Review.destroy({
     where: {
-      id: req.params.id
+      id: req.params.id,
+      userId: req.user.id
     }
   })
   .then(review => res.status(200).json(review))
@@ -36,10 +41,11 @@ router.delete('/:id', (req, res) => {
 })
 
 //Update//
-router.put('/:id', (req, res) => {
-  Review.update(req.body, {
+router.put('/:id', validateSession, (req, res) => {
+  Review.update(req.body.review, {
     where: {
-      id: req.params.id
+      id: req.params.id,
+      userId: req.user.id
     }
   })
   .then(review => res.status(200).json(review))
