@@ -22,7 +22,7 @@ router.post('/signup', function (req, res) {
             var token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
             console.log(`HERE IS THE TOKEN => ${token}`)
                 res.json({
-                    email: email,
+                    user: user,
                     message: 'created',
                     sessionToken: token
                 });
@@ -36,15 +36,15 @@ router.post('/signup', function (req, res) {
 
 router.post('/signin', function(req, res) {
     User.findOne({ where: { email: req.body.user.email}}).then(
-        function(email) {
-            if (email) {
+        function(user) {
+            if (user) {
                 bcrypt.compare(req.body.user.password,
-                email.password, function(err, matches) {
+                user.password, function(err, matches) {
                     if (matches) {
-                        var token = jwt.sign({id: email.id},
+                        var token = jwt.sign({id: user.id},
                         process.env.JWT_SECRET, {expiresIn: 60*60*24});
                         res.json({
-                            email: email,
+                            user: user,
                             message: "successfully authenticated",
                             sessionToken: token
                         });
